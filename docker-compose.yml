@@ -1,6 +1,32 @@
 ---
 version: '3.4'
 services:
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: semitechnologies/weaviate:1.19.11
+    ports:
+    - 8080:8080
+    restart: on-failure:0
+    volumes:
+      - /var/weaviate:/var/lib/weaviate
+    environment:
+      IMAGE_INFERENCE_API: 'http://i2v-neural:8080'
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'img2vec-neural'
+      ENABLE_MODULES: 'img2vec-neural'
+      CLUSTER_HOSTNAME: 'node1'
+  i2v-neural:
+    image: semitechnologies/img2vec-pytorch:resnet50
+    environment:
+      ENABLE_CUDA: '0'
   database:
     image: postgres
     container_name: database
@@ -15,6 +41,8 @@ services:
     build: .
     depends_on:
       - database
+      - weaviate
+      - i2v-neural
     env_file:
       - .env
     command: bash -c "bundle && rm -f /fashion_products_vdb/tmp/pids/server.pid && rails db:prepare && rails server -b 0.0.0.0"
