@@ -1,0 +1,27 @@
+---
+version: '3.4'
+services:
+  database:
+    image: postgres
+    container_name: database
+    env_file:
+      - .env
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - 6000:5432
+  fashion_products_vdb-web:
+    container_name: fashion_products_vdb-web
+    build: .
+    depends_on:
+      - database
+    env_file:
+      - .env
+    command: bash -c "bundle && rm -f /fashion_products_vdb/tmp/pids/server.pid && rails db:prepare && rails server -b 0.0.0.0"
+    volumes:
+      - .:/fashion_products_vdb
+      # - ./dataset:/dataset # Use this volume setup one time for the image dataset import process
+    ports:
+      - 3012:3000
+    tty: true
+...
