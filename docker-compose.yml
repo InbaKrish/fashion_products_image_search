@@ -52,4 +52,5 @@ services:
     ports:
       - 3012:3000
     tty: true
+    stdin_open: true
 ...

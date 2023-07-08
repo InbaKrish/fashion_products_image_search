@@ -1,0 +1,48 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="image-preview align-items-center mt-2 mb-4">
+      <div class="preview-box" id="image-preview-box">
+        <div class="preview-content">
+          <img id="image-preview-img" src="#" alt="Image Preview">
+        </div>
+      </div>
+    </div>
+
+    <%= form_with url: fashion_products_path, method: :get, data: {turbo_frame: "bands", turbo_action: "advance"}, multipart: true do |form| %>
+      <div class="form-row align-items-center">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <%= form.file_field :product_image, class: "form-control-file d-none", id: "image-upload", accept: "image/*" %>
+              <label class="btn btn-primary" for="image-upload">Choose File</label>
+            </div>
+            <div class="col">
+              <%= form.submit "Search", class: "btn btn-primary", id: "image-upload-submit", disabled: true %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const imageUploadInput = document.getElementById("image-upload");
+    const imagePreviewBox = document.getElementById("image-preview-box");
+    const imagePreviewImg = document.getElementById("image-preview-img");
+    const imageUploadSubmit = document.getElementById("image-upload-submit");
+
+    imageUploadInput.addEventListener("change", function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreviewImg.src = e.target.result;
+          imagePreviewBox.style.display = "block";
+          imageUploadSubmit.disabled = false;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+</script>

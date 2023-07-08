@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "products" do %>
+  <div class="container">
+    <div class="row">
+      <% @fashion_products.each_slice(5) do |group| %>
+        <% group.each do |fashion_product| %>
+          <%= render partial: 'fashion_product', locals: { fashion_product: fashion_product } %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
